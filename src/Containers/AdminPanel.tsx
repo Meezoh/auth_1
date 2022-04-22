@@ -4,7 +4,11 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 
-const AdminPanel = () => {
+interface Props {
+  title: string;
+}
+
+const AdminPanel = ({ title }: Props) => {
   const token = localStorage.getItem('authToken');
   const navigate = useNavigate();
 
@@ -14,6 +18,8 @@ const AdminPanel = () => {
 
   return (
     <div className="AdminPanel">
+      {/* <h1 className="title">{title}</h1> */}
+
       <Table className="table" striped bordered hover size="sm">
         <thead>
           <tr>

@@ -5,7 +5,11 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const Register = () => {
+interface Props {
+  title: string;
+}
+
+const Register = ({ title }: Props) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState<string>('');
   const [password, setPassword] = useState<any>('');
@@ -19,12 +23,14 @@ const Register = () => {
     e.preventDefault();
 
     fetch('https://admin-be.herokuapp.com/api/v1/signup', {
+      // mode: 'no-cors',
       method: 'POST',
       body: JSON.stringify(details),
       headers: { 'Content-Type': 'application/json' },
     })
       .then(res => res.json())
       .then(result => {
+        console.log(result);
         const token = result.user.token;
         localStorage.setItem('authToken', token);
         // setLoading(false);
@@ -38,6 +44,7 @@ const Register = () => {
 
   return (
     <div className="Register">
+      <h1 className="title">{title} Sign Up</h1>
       <Form onSubmit={handleSignin}>
         <Col>
           <Form.Control
@@ -63,6 +70,7 @@ const Register = () => {
               type="password"
               placeholder="Password"
               onChange={e => setPassword(e.target.value)}
+              required
             />
           </Col>
         </Form.Group>

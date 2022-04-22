@@ -4,12 +4,19 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
+import Alert from 'react-bootstrap/Alert';
+import { Link } from 'react-router-dom';
 
-const Home = () => {
+interface Props {
+  title: string;
+}
+
+const Home = ({ title }: Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState<any>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(false);
   const navigate = useNavigate();
 
   // validate the name and password
@@ -26,22 +33,28 @@ const Home = () => {
     })
       .then(res => res.json())
       .then(result => {
-        const token = result.user.token;
-        localStorage.setItem('authToken', token);
         // setLoading(false);
-        if (!result.msg) {
+        if (result.msg) {
+          setError(result.msg);
+          setShow(true);
+        } else {
+          const token = result.user.token;
+          localStorage.setItem('authToken', token);
           navigate('/');
         }
-        setError(result.msg);
       })
       .catch(err => console.log(err));
   };
 
-  const handleClick = () => {};
-
   return (
     <div className="Home">
-      <h1 className="hey-yo">Hey yo Meezoh!</h1>
+      {show && (
+        <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+          <Alert.Heading>{error}</Alert.Heading>
+        </Alert>
+      )}
+
+      <h1 className="title">{title}</h1>
       <p>Sign into your account</p>
 
       <Form onSubmit={handleSignin}>
@@ -71,15 +84,13 @@ const Home = () => {
 
         <Form.Group as={Row} className="mb-3">
           <Col>
-            <Button type="submit" onClick={handleClick}>
-              Sign in
-            </Button>
+            <Button type="submit">Sign in</Button>
           </Col>
         </Form.Group>
       </Form>
 
       <p className="register-here">
-        Don't have an account? <a href="#">Register here</a>
+        Don't have an account? <Link to="/signup">Register here</Link>
       </p>
     </div>
   );
